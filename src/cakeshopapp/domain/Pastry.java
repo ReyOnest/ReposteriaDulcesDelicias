@@ -8,8 +8,8 @@ public class Pastry extends Product {
     private String size;
 
     // Constructor Principal
-    public Pastry(int idProduct, String name, String flavor, double price, int stock, ProductState state) {
-        super(idProduct, name, flavor, price, stock, state);
+    public Pastry(int idProduct, String name, String flavor, double price, int stock, ProductState state, Category category) {
+        super(idProduct, name, flavor, price, stock, state, category);
         this.size = "None"; // Valor por defecto
     }
 
@@ -18,7 +18,7 @@ public class Pastry extends Product {
         super();
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public String getSize() { return size; }
     public void setSize(String size) { this.size = size; }
 

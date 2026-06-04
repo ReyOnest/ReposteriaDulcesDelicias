@@ -27,7 +27,7 @@ public class Admin extends Person {
         System.out.println("Administrador: " + getName() + " | Rol: " + role);
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
     public String getPermission() { return permission; }

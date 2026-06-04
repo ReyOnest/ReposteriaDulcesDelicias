@@ -3,7 +3,7 @@ package cakeshopapp.domain;
 import java.util.List;
 import java.util.Scanner;
 
-    // Convertimos en clase abstracta
+    // Clase abstracta
 public abstract class Person {
 
     // Atributos de la clase Person
@@ -35,7 +35,7 @@ public abstract class Person {
         this.status = status;
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getName() { return name; }

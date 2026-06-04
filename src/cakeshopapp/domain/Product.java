@@ -4,6 +4,7 @@ import cakeshopapp.domain.enums.ProductState;
 
 import java.util.List;
 
+// Clase abstracta
 public abstract class Product {
 
     // Atributos de la clase Product
@@ -13,16 +14,17 @@ public abstract class Product {
     private double price;
     private int stock;
     private ProductState state;
+    private Category category;
 
     //Constructores de la clase Product
-
-    public Product(int idProduct, String name, String flavor, double price, int stock, ProductState state) {
+    public Product(int idProduct, String name, String flavor, double price, int stock, ProductState state, Category category) {
         this.idProduct = idProduct;
         this.name = name;
         this.flavor = flavor;
         this.price = price;
         this.stock = stock;
         this.state = state;
+        this.category = category;
     }
     public Product() {
     }
@@ -34,8 +36,8 @@ public abstract class Product {
     public Product(boolean status){
         this.state = state;
     }
-    //Getter and Setter
 
+    //Getters and Setters
     public int getIdProduct() {
         return idProduct;
     }
@@ -70,12 +72,12 @@ public abstract class Product {
     public void setState(ProductState state) {
         this.state = state;
     }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
-    //Metodos propios
+    //Métodos propios de la clase Product
 
-    public <T> void createElement( T product){
-
-    }
+    public <T> void createElement( T product){ }
 
     public Product createProduct(Product product){
         return product;
@@ -93,9 +95,10 @@ public abstract class Product {
         return null;
     }
 
-    public void deleteProduct(int idProduct){
+    public void deleteProduct(int idProduct){ }
 
-    }
+    // Método abstracto
+    public abstract void showInformation();
 
     // Método toString
     @Override
@@ -109,8 +112,5 @@ public abstract class Product {
                 ", state=" + state +
                 '}';
     }
-
-    // Método abstracto
-    public abstract void showInformation();
 
 }

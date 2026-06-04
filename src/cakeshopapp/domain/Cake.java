@@ -8,8 +8,8 @@ public class Cake extends Product {
     private int slices;
 
     // Constructor Principal
-    public Cake(int idProduct, String name, String flavor, double price, int stock, ProductState state) {
-        super(idProduct, name, flavor, price, stock, state);
+    public Cake(int idProduct, String name, String flavor, double price, int stock, ProductState state, Category category) {
+        super(idProduct, name, flavor, price, stock, state, category);
         this.slices = 0; // Se inicializa en 0 y luego usas el setter
     }
 
@@ -18,7 +18,7 @@ public class Cake extends Product {
         super();
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public int getSlices() { return slices; }
     public void setSlices(int slices) { this.slices = slices; }
 

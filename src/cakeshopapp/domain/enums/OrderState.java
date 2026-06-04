@@ -4,6 +4,7 @@ public enum OrderState {
     PENDING("Pendiente"),
     IN_PREPARATION("En preparación"),
     READY("Listo"),
+    PAID("Pagado"),
     DELIVERED("Entregado"),
     CANCELLED("Cancelado");
 

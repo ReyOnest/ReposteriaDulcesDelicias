@@ -30,7 +30,7 @@ public class Customer extends Person {
         System.out.println("Cliente: " + getName() + " " + getLastName() + " | Ciudad: " + city);
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
     public String getCity() { return city; }

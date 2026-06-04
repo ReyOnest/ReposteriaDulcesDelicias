@@ -1,38 +1,42 @@
 package cakeshopapp.domain;
 
+import cakeshopapp.domain.enums.CategoryStateEnum;
+
 public class Category {
 
-    // Atributos propios de Category
+    // Atributos
     private int idCategory;
     private String nameCategory;
     private String description;
+    private CategoryStateEnum state;
 
     // Constructor vacío
     public Category() {
     }
 
-    // Constructores
-    public Category(int idCategory, String nameCategory, String description) {
+    // Constructor completo
+    public Category(int idCategory, String nameCategory, String description, CategoryStateEnum state) {
         this.idCategory = idCategory;
         this.nameCategory = nameCategory;
         this.description = description;
+        this.state = state;
     }
 
-    // Getters y Setters
-    public int getId() {
+    // Getters and Setters
+    public int getIdCategory() {
         return idCategory;
     }
 
-    public void setId(int id) {
-        this.idCategory = id;
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
     }
 
-    public String getName() {
+    public String getNameCategory() {
         return nameCategory;
     }
 
-    public void setName(String name) {
-        this.nameCategory = name;
+    public void setNameCategory(String nameCategory) {
+        this.nameCategory = nameCategory;
     }
 
     public String getDescription() {
@@ -41,6 +45,14 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public CategoryStateEnum getState() {
+        return state;
+    }
+
+    public void setState(CategoryStateEnum state) {
+        this.state = state;
     }
 
     // Método toString

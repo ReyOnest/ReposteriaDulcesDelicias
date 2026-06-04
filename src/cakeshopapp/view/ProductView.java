@@ -1,66 +1,137 @@
 package cakeshopapp.view;
 
-import cakeshopapp.domain.Cake;
-import cakeshopapp.domain.Pastry;
+import cakeshopapp.domain.*;
 import cakeshopapp.domain.enums.ProductState;
-import cakeshopapp.services.ProductService;
+import cakeshopapp.services.input.CategoryService;
+import cakeshopapp.services.input.ProductService;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ProductView {
 
     private final Scanner sc = new Scanner(System.in);
 
-    public void createProductMenu(ProductService productService) {
+    public void createProductMenu(ProductService productService, CategoryService categoryService) {
         System.out.println("\n--- REGISTRO DE NUEVO PRODUCTO ---");
-        System.out.println("¿Qué tipo de producto desea agregar?");
-        System.out.println("1. Torta (Cake)");
-        System.out.println("2. Postre (Pastry)");
-        int type = sc.nextInt();
-        sc.nextLine();
 
-        System.out.print("Ingrese el ID del producto: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        // 1. Unificamos: La categoría determina el tipo de producto
+        System.out.println("Seleccione la categoría del producto:");
+        List<Category> categories = categoryService.getAllCategories();
 
-        System.out.print("Ingrese el Nombre del producto: ");
+        // Verificamos que haya categorías
+        if (categories.isEmpty()) {
+            System.out.println("Error: No hay categorías registradas en el sistema.");
+            return;
+        }
+
+        categories.forEach(c -> System.out.println(c.getIdCategory() + ". " + c.getNameCategory()));
+        System.out.print("Seleccione: ");
+
+        int catId = sc.nextInt();
+        sc.nextLine(); // Limpiar buffer
+
+        Category selectedCategory = categoryService.getCategoryById(catId).orElse(null);
+
+        if (selectedCategory == null) {
+            System.out.println("Error: Categoría no encontrada. Operación cancelada.");
+            return;
+        }
+
+        // 2. Captura datos comunes
+        System.out.print("Nombre: ");
         String name = sc.nextLine();
-
-        System.out.print("Ingrese el Precio del Producto: ");
+        System.out.print("Precio: ");
         double price = sc.nextDouble();
-
-        System.out.print("Cantidad en inventario: ");
+        System.out.print("Stock: ");
         int stock = sc.nextInt();
         sc.nextLine();
+        System.out.print("Sabor: ");
+        String flavor = sc.nextLine();
 
-        if (type == 1) {
-            System.out.print("Sabor de la torta (Vainilla, Chocolate, etc.): ");
-            String flavor = sc.nextLine();
-            System.out.print("Tamaño de la torta (12, 20 o 30 porciones): ");
-            String slicesInput = sc.nextLine();
+        // 3. Lógica por Tipo de Categoría
+        String catName = selectedCategory.getNameCategory().toUpperCase();
 
-            Cake newCake = new Cake(id, name, flavor, price, stock, ProductState.AVAILABLE);
-            newCake.setFlavor(flavor);
-            newCake.setSlices(Integer.parseInt(slicesInput)); // Asegúrate de tener este método en Cake o Product
+        try {
+            if (catName.contains("TORTA") || catName.contains("CAKE")) {
+                System.out.print("Porciones: ");
+                int slices = sc.nextInt();
+                Cake cake = new Cake(0, name, flavor, price, stock, ProductState.AVAILABLE, selectedCategory);
+                cake.setSlices(slices);
+                productService.addProduct(cake);
 
-            productService.addProduct(newCake);
-            System.out.println("\n¡Torta de " + flavor + " (" + slicesInput + " porciones) registrada!");
-        } else {
-            System.out.print("Sabor del postre: ");
-            String flavor = sc.nextLine();
-            System.out.print("Tamaño/Porción (Pequeño/Mediano/Grande): ");
-            String size = sc.nextLine();
+            } else if (catName.contains("POSTRE") || catName.contains("PASTRY")) {
+                System.out.print("Tamaño (P/M/G): ");
+                String size = sc.nextLine();
+                Pastry pastry = new Pastry(0, name, flavor, price, stock, ProductState.AVAILABLE, selectedCategory);
+                pastry.setSize(size);
+                productService.addProduct(pastry);
 
-            Pastry newPastry = new Pastry(id, name, flavor, price, stock, ProductState.AVAILABLE);
-            newPastry.setFlavor(flavor); // Asegúrate de tener este método en Pastry o Product
-            newPastry.setSize(size);
+            } else if (catName.contains("CUPCAKE")) {
+                System.out.print("Cobertura: ");
+                String frosting = sc.nextLine();
+                Cupcake cupcake = new Cupcake(0, name, flavor, price, stock, ProductState.AVAILABLE, frosting, selectedCategory);
+                productService.addProduct(cupcake);
 
-            productService.addProduct(newPastry);
-            System.out.println("\n¡Postre de " + flavor + " (" + size + ") registrado!");
+            } else if (catName.contains("GALLETA") || catName.contains("COOKIE")) {
+                System.out.print("¿Es crujiente? (true/false): ");
+                boolean isCrunchy = sc.nextBoolean();
+                Cookie cookie = new Cookie(0, name, flavor, price, stock, ProductState.AVAILABLE, isCrunchy, selectedCategory);
+                productService.addProduct(cookie);
+
+            } else {
+                System.out.println("Categoría no mapeada a un tipo de producto específico.");
+                return;
+            }
+            System.out.println("¡Producto registrado con éxito!");
+        } catch (Exception e) {
+            System.out.println("Error al procesar los datos específicos: " + e.getMessage());
         }
     }
 
     public void listAllProducts(ProductService productService) {
-        System.out.println("\n--- INVENTARIO DE DULCES DELICIAS ---");
-        productService.listAllProducts().forEach(System.out::println);
+        System.out.println("\n--- INVENTARIO ---");
+        productService.listAllProducts().forEach(p -> System.out.println(p.toString()));
+    }
+
+    public void findProductById(ProductService productService) {
+        System.out.print("Ingrese ID del producto a buscar: ");
+        int id = sc.nextInt();
+        // CORRECCIÓN: Manejo de Optional en lugar de comparación con null
+        productService.findById(id).ifPresentOrElse(
+                product -> System.out.println("Producto encontrado: " + product),
+                () -> System.out.println("Error: Producto no encontrado.")
+        );
+    }
+
+    public void updateProduct(ProductService productService) {
+        System.out.print("Ingrese ID del producto a modificar: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        productService.findById(id).ifPresentOrElse(product -> {
+            System.out.print("Nuevo nombre (actual: " + product.getName() + "): ");
+            product.setName(sc.nextLine());
+            System.out.print("Nuevo precio: ");
+            product.setPrice(sc.nextDouble());
+
+            productService.updateProduct(product);
+            System.out.println("¡Producto actualizado exitosamente!");
+        }, () -> {
+
+            System.out.println("Error: Producto no encontrado.");
+        });
+    }
+
+    public void deleteProduct(ProductService productService) {
+        System.out.print("Ingrese ID del producto a eliminar: ");
+        int id = sc.nextInt();
+
+        productService.findById(id).ifPresentOrElse(
+                product -> {
+                    productService.deleteProduct(id);
+                    System.out.println("Proceso de eliminación ejecutado.");
+                },
+                () -> System.out.println("Error: No se puede eliminar, el producto no existe.")
+        );
     }
 }

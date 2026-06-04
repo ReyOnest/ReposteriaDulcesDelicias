@@ -1,0 +1,79 @@
+package cakeshopapp.utils;
+
+import cakeshopapp.domain.Customer; // Asegúrate de importar tu entidad Customer
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class FormValidator {
+
+    private static final Scanner sc = new Scanner(System.in);
+
+    public static void validateId(Customer customer) {
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                System.out.println("Ingrese el id del cliente");
+                int id = sc.nextInt();
+                sc.nextLine();
+                validInput = true;
+                customer.setId(id);
+            } catch (Exception e) {
+                System.out.println("Error al ingresar el id del cliente, por favor ingrese un numero entero");
+                sc.nextLine();
+            }
+        }
+    }
+
+    public static int validateInt(String prompt) {
+        while (true) {
+            try {
+                System.out.println(prompt);
+                int value = sc.nextInt();
+                sc.nextLine();
+                return value;
+            } catch (InputMismatchException e) {
+                System.out.println("Error al ingresar el valor, este debe ser un numero entero");
+                sc.nextLine();
+            }
+        }
+    }
+
+    public static int readInt(String prompt) {
+        return validateInt(prompt);
+    }
+
+    public static double validateDouble(String prompt) {
+        while (true) {
+            try {
+                System.out.println(prompt);
+                double value = sc.nextDouble();
+                sc.nextLine();
+                return value;
+            } catch (InputMismatchException e) {
+                System.out.println("Error al ingresar el valor, este debe ser un numero decimal");
+                sc.nextLine();
+            }
+        }
+    }
+
+    public static String validateString(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String value = sc.nextLine().trim();
+            if (!value.isEmpty()) {
+                return value;
+            }
+            System.out.println("Error: el campo no debe estar vacio.");
+        }
+    }
+
+    public static boolean validateCustomerForm(String name, String email, String phone) {
+        return name != null && !name.trim().isEmpty() &&
+                email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$") &&
+                phone != null && phone.matches("^\\d{10}$");
+    }
+
+    public static String formatCurrency(double amount) {
+        return String.format("$ %,.0f", amount);
+    }
+}
